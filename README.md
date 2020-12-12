@@ -153,13 +153,13 @@ Windows: `libiir_static.lib`).
 
 
 
-## Packages for Ubuntu (xenial / bionic):
+## Packages for Ubuntu (xenial / bionic / focal):
 
-If you have Ubuntu xenial or bionic then
+If you have Ubuntu's LTS distros xenial, bionic or focal then
 install it as a pre-compiled package:
 
 ```
-sudo add-apt-repository ppa:berndporr/usbdux
+sudo add-apt-repository ppa:berndporr/dsp
 ```
 
 It's available for 32,64 bit PC and 32,64 bit ARM (Raspberry PI etc).
@@ -167,6 +167,24 @@ The documentation and the example programs are in:
 ```
 /usr/share/doc/iir1-dev/
 ```
+
+## Package for MacOS
+
+Make sure you have the homebrew package manager installed: https://brew.sh/
+
+Add the homebrew tap:
+
+```
+brew tap berndporr/dsp
+```
+
+and then install the iir filter package with:
+
+```
+brew install iir
+```
+
+
 
 ## Compilation from source
 
