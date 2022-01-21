@@ -37,7 +37,19 @@ instantiated specifying its order, then the
 parameters are set with the function `setup` and
 then it's ready to be used for sample by sample realtime filtering.
 
-### Setting the filter parameters
+### Instantiating the filter
+The idea is to allocate the memory of the
+filter at compile time with a template argument to avoid any new
+commands. This prevents memory leaks and can be optimised at compile
+time. The `order` provided to the template (for example here for a
+lowpass filter):
+```
+Iir::Butterworth::LowPass<order> f;
+```
+is used as the default order by the `setup` command below
+but can be overridden by a lower order if required.
+
+### Setting the filter parameters: `setup`
 All filters are available as lowpass, highpass, bandpass and bandstop/notch
 filters. Butterworth / Chebyshev offer also low/high/band-shelves with
 specified passband gain and 0dB gain in the stopband.
@@ -49,6 +61,9 @@ Internally the library uses normalised frequencies and the setup commands
 simply divide by the sampling rate if given. Choose between:
  1. `setup`: sampling rate and the analogue cutoff frequencies
  2. `setupN`: normalised frequencies in 1/samples between f = 0..1/2 where 1/2 = Nyquist.
+
+By default `setup` uses the order supplied by the template argument but
+can be overridden by lower filter orders.
 
 See the header files in `\iir` or the documentation for the arguments
 of the `setup` commands.
@@ -161,6 +176,9 @@ an exception. Parameters provided to `setup()` which
 result in coefficients being NAN will also
 throw an exception.
 
+You can switch off exeption handling by defining
+`IIR1_NO_EXCEPTIONS` via cmake or in your program.
+
 
 ## Linking
 
@@ -185,10 +203,10 @@ Windows: `libiir_static.lib`).
 
 
 
-## Packages for Ubuntu (xenial / bionic / focal):
+## Packages for Ubuntu LTS:
 
-If you have Ubuntu's LTS distros xenial, bionic or focal then
-install it as a pre-compiled package:
+If you are using Ubuntu LTS then you can
+install this library as a pre-compiled package:
 
 ```
 sudo add-apt-repository ppa:berndporr/dsp
@@ -243,7 +261,7 @@ Both gcc and clang have been tested.
 ### Windows
 
 ```
-cmake -G "Visual Studio 15 2017 Win64" .
+cmake -G "Visual Studio 16 2019" -A x64 .
 ```
 
 See `cmake` for the different build-options. Above is for a 64 bit build.
@@ -254,8 +272,10 @@ to use the static library and link it into the application program.
 ### Unit tests
 
 Run unit tests by typing `make test` or just `ctest`.
-These test if after a delta pulse all filters relax to zero and
-that their outputs never become NaN.
+These test if after a delta pulse all filters relax to zero,
+that their outputs never become NaN and if the Direct Form I&II filters calculate
+expected sequences by comparing them from results created
+by the output of scipy's `sosfilt`.
 
 ## Documentation
 
